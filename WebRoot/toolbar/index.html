@@ -1,0 +1,71 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+<style>
+html, body {
+	width : 100%;
+	height : 100%;
+	padding : 0;
+	margin : 0;
+	overflow : hidden;
+}
+
+
+</style>
+<link href="css/core.css" rel="stylesheet" type="text/css"/>
+<link href="css/TabPanel.css" rel="stylesheet" type="text/css"/>
+<link href="css/WindowPanel.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript" src="js/Fader.js"></script>
+<script type="text/javascript" src="js/TabPanel.js"></script>
+<script type="text/javascript" src="js/Math.uuid.js"></script>
+<script type="text/javascript" src="js/ui.mouse.js"></script>
+<script type="text/javascript" src="js/ui.draggable.js"></script>
+<script type="text/javascript" src="js/ui.draggable.ext.js"></script>
+<script type="text/javascript" src="js/WindowPanel.js"></script>
+</head>
+
+<body>
+
+<script type="text/javascript">
+
+/////////////////////////////////////////////////////////////////
+var tabpanel;
+$(document).ready(function(){
+	tabpanel = new TabPanel({
+		renderTo:'tab',
+		//width:'100%', //如果设置了宽度,就不会自动改变宽度
+		height:400,
+		//border:'none',
+		active : 0,
+		items : [{
+			id:'toolbarPlugin',
+			title:'工具栏组件',
+			html:'<iframe src="./toolbar.html" width="100%" height="100%" frameborder="0"></iframe>',
+			closable: false
+		}]
+	});
+});
+function addadd(){
+	tabpanel.addTab({title:'无限添加', html:'<iframe src="" width="100%" height="100%" frameborder="0"></iframe>'});
+}
+function openBaiduWindow()
+{
+  new WindowPanel({
+    id : 'baidu',
+    title : '百度',
+    width : 400,
+    height : 177,
+    dragable : true,
+    html : '<iframe name="baiduFrame" id="baiduFrame" src="" frameborder="0" scrolling="auto"></iframe>'
+  });
+}
+</script>
+<div id="tab" style="width:100%; height:500px;"></div>
+<input type="button" value="无限添加Tab" onclick="addadd();"/>
+<input type="button" value="按照ID获得选项卡Title" onclick="tabpanel.moveToRight()"/>
+<input type="button" value="获得被激活选项卡的Title" onclick="alert(tabpanel.getActiveTab().title.text());"/>
+</body>
+</html>

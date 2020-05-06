@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.flf.mapper.UserMapper">
+	<sql id="userColumns">loginname,username,password,rights,status,role_id,is_super,email</sql>
+
+	<resultMap type="User" id="userAndRoleResultMap">
+		<id column="user_id" property="userId"/>
+		<result column="loginname" property="loginname"/>
+		<result column="username" property="username"/>
+		<result column="password" property="password"/>
+		<result column="user_rights" property="rights"/>
+		<result column="status" property="status"/>
+		<result column="last_login" property="lastLogin"/>
+		<result column="is_super" property="isSuper"/>
+		<result column="email" property="email"/>
+		<association property="role" column="role_id" javaType="Role">
+			<id column="role_id" property="roleId"/>
+			<result column="role_name" property="roleName"/>
+			<result column="role_rights" property="rights"/>
+		</association>
+	</resultMap>
+	<resultMap type="User" id="userResultMap">
+		<id column="user_id" property="userId"/>
+		<result column="loginname" property="loginname"/>
+		<result column="username" property="username"/>
+		<result column="password" property="password"/>
+		<result column="rights" property="rights"/>
+		<result column="status" property="status"/>
+		<result column="role_id" property="roleId"/>
+		<result column="is_super" property="isSuper"/>
+		<result column="email" property="email"/>
+	</resultMap>
+	
+	<select id="listAllUser" resultMap="userAndRoleResultMap">
+		select u.user_id,u.username,u.loginname,u.password,r.role_id,r.role_name ,u.last_login,u.email
+		from tb_user u 
+		left join tb_role r on u.role_id=r.role_id 
+		where u.status=0 
+	</select>
+	<select id="listAllUserRole" resultMap="userAndRoleResultMap">
+		select u.user_id,u.role_id,u.loginname,u.username,u.email
+		from tb_user u
+		where role_id=#{roleId}
+	</select>
+	<select id="listPageUser" parameterType="User" resultMap="userAndRoleResultMap">
+		select u.user_id,u.username,u.loginname,u.password,r.role_id,r.role_name ,u.last_login,u.email
+		from tb_user u 
+		left join tb_role r on u.role_id=r.role_id 
+		where u.status=0 and u.is_super=#{isSuper}
+		<if test="loginname!=null and loginname!=''">
+			and u.loginname like "%"#{loginname}"%" 
+		</if>
+		<if test="roleId!=null and roleId!=0">
+			and u.role_id=#{roleId} 
+		</if>
+		<if test="lastLoginStart!=null">
+		and u.last_login&gt;=#{lastLoginStart} 
+		</if>
+		<if test="lastLoginEnd!=null">
+		and u.last_login&lt;=#{lastLoginEnd} 
+		</if>
+	</select>
+	
+	<select id="getUserInfo" parameterType="User" resultMap="userResultMap">
+		select * from tb_user where 1=1
+		<if test="loginname!=null and password!=null">
+		and loginname = #{loginname} and password=#{password}
+		</if>
+		<if test="userId!=null and userId>0">
+		and user_id = #{userId}
+		</if>
+	</select>
+	<select id="getUserById" parameterType="int" resultMap="userResultMap">
+		select * from tb_user u where u.user_id = #{userId}
+	</select>
+	<select id="getUserAndRoleById" parameterType="int" resultMap="userAndRoleResultMap">
+		select u.user_id,u.username,u.rights as user_rights,u.is_super,u.loginname,u.password,r.role_id,r.role_name,r.rights as role_rights 
+		from tb_user u 
+		left join tb_role r on u.role_id=r.role_id 
+		where u.status=0 and u.user_id=#{userId}
+	</select>
+	<select id="getCountByName" parameterType="User" resultType="int">
+		select count(user_id) from tb_user where loginname=#{loginname}
+	</select>
+	<select id="getCount" parameterType="User" resultType="int">
+		select count(user_id) from tb_user where status=0 
+		<if test="loginname!=null and loginname!=''">
+		 and loginname like "%"#{loginname}"%" 
+		</if>
+		<if test="roleId!=null and roleId!=0">
+		and role_id=#{roleId} 
+		</if>
+		<if test="lastLoginStart!=null">
+		and last_login&gt;=#{lastLoginStart} 
+		</if>
+		<if test="lastLoginEnd!=null">
+		and last_login&lt;=#{lastLoginEnd} 
+		</if>
+	</select>
+	
+	<insert id="insertUser" parameterType="User" useGeneratedKeys="true" keyProperty="userId">
+		insert tb_user (<include refid="userColumns"/>) values (#{loginname},#{username},#{password},#{rights},0,#{roleId},#{isSuper},#{email})
+	</insert>
+	<update id="updateUser" parameterType="User">
+		update tb_user set 
+		loginname=#{loginname},
+		username=#{username},password=#{password},
+		rights=#{rights},
+		status=#{status},
+		role_id=#{roleId},
+		last_login=#{lastLogin} 
+		where user_id=#{userId}
+	</update>
+	<update id="updateLastLogin" parameterType="User">
+		update tb_user set last_login=#{lastLogin} where user_id=#{userId}
+	</update>
+	<update id="updateUserBaseInfo" parameterType="User">
+		update tb_user set 
+		loginname=#{loginname},
+		username=#{username},
+		role_id=#{roleId} 
+		<if test="password!=null and password!=''">,password=#{password} </if>
+		 where user_id=#{userId}
+	</update>
+	<update id="updateUserRights" parameterType="User">
+		update tb_user set rights=#{rights} where user_id=#{userId}
+	</update>
+	<delete id="deleteUser" parameterType="int">
+		delete from tb_user where user_id=#{userId}
+	</delete>
+</mapper>

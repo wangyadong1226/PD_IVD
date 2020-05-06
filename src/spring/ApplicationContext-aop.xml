@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	     xmlns:aop="http://www.springframework.org/schema/aop"
+	     xmlns:tx="http://www.springframework.org/schema/tx"
+	     xmlns:context="http://www.springframework.org/schema/context"
+	     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+           http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd
+           http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd">
+           
+   <!--<bean id="todoAdvice" class="com.flf.aop.TodoAdvice" />
+    
+    <aop:config proxy-target-class="true">
+        <aop:aspect ref="todoAdvice">                
+            <aop:pointcut id="addTodoPointcut" expression="execution(* com.flf.service.sequence.*.saveSequenceTask(..))||execution(* com.flf.service.impl.library.ConstructionLibraryServiceImpl.insertConstructionLibrary(..))||execution(* com.flf.service.impl.libraryControl.LibraryControlServiceImpl.insertLibraryControlInfo(..))||execution(* com.flf.service.impl.pooling.PoolingServiceImpl.insertPooling(..))||execution(* com.flf.service.impl.bloodSeparate.BloodSepMainServiceImpl.insertBlood(..))||execution(* com.flf.service.impl.pooling.PoolingServiceImpl.insertPooling(..))" />
+            <aop:after pointcut-ref="addTodoPointcut" method="addAfter" />
+        </aop:aspect>
+        
+        <aop:aspect ref="todoAdvice">              
+            <aop:pointcut id="updateTodoPointcut" expression="execution(* com.flf.service.sequence.*.updateSequenceTaskState(..))||execution(* com.flf.service.impl.library.ConstructionLibraryServiceImpl.updateConstructionLibrarySub(..))||execution(* com.flf.service.impl.bloodSeparate.BloodSepMainServiceImpl.updateSubmit(..))||execution(* com.flf.service.impl.library.ConstructionLibraryServiceImpl.updateConstructionLibrarySub(..))||execution(* com.flf.service.impl.pooling.PoolingServiceImpl.updateSubmit(..))" />
+            <aop:after pointcut-ref="updateTodoPointcut" method="updateAfter" />
+        </aop:aspect>
+    </aop:config>-->
+</beans>

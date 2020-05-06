@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+	
+	<bean id="userService" class="com.flf.service.impl.UserServiceImpl">
+		<property name="userMapper" ref="userMapper"/>
+	</bean>
+	<bean id="roleService" class="com.flf.service.impl.RoleServiceImpl">
+		<property name="roleMapper" ref="roleMapper"/>
+	</bean>
+	<bean id="menuService" class="com.flf.service.impl.MenuServiceImpl">
+		<property name="menuMapper" ref="menuMapper"/>
+	</bean>
+	<bean id="batchService" class="com.flf.service.impl.BatchServiceImpl">
+		<property name="batchMapper" ref="batchMapper"/>
+		<property name="sampleMapper" ref="sampleMapper"/>
+		<property name="roleMapper" ref="roleMapper"/>
+	</bean>
+	<bean id="sampleService" class="com.flf.service.impl.SampleServiceImpl">
+		<property name="sampleMapper" ref="sampleMapper"/>
+		<property name="batchMapper" ref="batchMapper"/>
+	</bean>
+	<bean id="warnService" class="com.flf.service.impl.WarnServiceImpl">
+		<property name="warnMapper" ref="warnMapper"/>
+	</bean>
+</beans>

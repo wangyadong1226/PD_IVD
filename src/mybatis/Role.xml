@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.flf.mapper.RoleMapper">
+
+	<resultMap type="Role" id="roleResultMap">
+		<id column="role_id" property="roleId"/>
+		<result column="role_name" property="roleName"/>
+		<result column="rights" property="rights"/>
+	</resultMap>
+	
+	<select id="listAllRoles" resultMap="roleResultMap">
+		SELECT r.*,u.* from tb_role r,tb_user u
+		where u.role_id=r.role_id
+		<if test="roleName!=null and roleName!=''">
+			AND role_name LIKE  concat('%',#{roleName},'%')
+		</if>
+		order by r.role_id desc
+	</select>
+	<select id="getRoleById" parameterType="int" resultMap="roleResultMap">
+		SELECT r.*,u.* from tb_role r
+		LEFT JOIN tb_unit_from u
+		ON r.unit_from_id=u.id
+		where r.role_id=#{roleId}
+	</select>
+	<select id="getCountByName" parameterType="Role" resultType="int">
+		select count(role_id) from tb_role where role_name=#{roleName}
+		<if test="roleId!=null or roleId>0">
+		 and role_id!=#{roleId}
+		</if>
+	</select>
+	
+	<insert id="insertRole" parameterType="Role" useGeneratedKeys="true" keyProperty="roleId">
+		insert into tb_role (role_name) values (#{roleName})
+	</insert>
+	
+	<update id="updateRoleBaseInfo" parameterType="Role">
+		update tb_role 
+		set 
+		role_name=#{roleName},
+		unit_from_id=#{unitFromId}
+		where role_id=#{roleId}
+	</update>
+	<update id="updateRoleRights" parameterType="Role">
+		update tb_role set rights=#{rights} where role_id=#{roleId}
+	</update>
+	<delete id="deleteRoleById" parameterType="int">
+		delete from tb_role where role_id=#{roleId}
+	</delete>
+</mapper>

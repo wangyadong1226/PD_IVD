@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.flf.mapper.MenuMapper">
+
+	<resultMap type="Menu" id="menuResultMap">
+		<id column="menu_id" property="menuId"/>
+		<result column="menu_name" property="menuName"/>
+		<result column="menu_url" property="menuUrl"/>
+		<result column="parent_id" property="parentId"/>
+		<result column="is_super" property="isSuper"/>
+	</resultMap>
+
+	<select id="listAllParentMenu" resultMap="menuResultMap" parameterType="Menu">
+		select * from tb_menu where parent_id is null and is_super = #{isSuper}
+	</select>
+	<select id="listSubMenuByParentMenu" parameterType="Menu" resultMap="menuResultMap">
+		select * from tb_menu where parent_id=#{parentId} and is_super=#{isSuper}
+	</select>
+	<select id="getMenuById" parameterType="int" resultMap="menuResultMap">
+		select * from tb_menu where menu_id=#{menuId}
+	</select>
+	<select id="listAllSubMenu" resultMap="menuResultMap">
+		select * from tb_menu where parent_id is not null
+	</select>
+	
+	<insert id="insertMenu" parameterType="Menu"  useGeneratedKeys="true" keyProperty="menuId">
+		insert into tb_menu (menu_name,menu_url,parent_id,is_super) values (#{menuName},#{menuUrl},#{parentId},#{isSuper})
+	</insert>
+	
+	<update id="updateMenu" parameterType="Menu">
+		update tb_menu set 
+		menu_name=#{menuName},
+		menu_url=#{menuUrl},
+		parent_id=#{parentId} 
+		where menu_id=#{menuId}
+	</update>
+	
+	<delete id="deleteMenuById" parameterType="int">
+		delete from tb_menu where menu_id=#{menuId} or parent_id=#{menuId}
+	</delete>
+</mapper>

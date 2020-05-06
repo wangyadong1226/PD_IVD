@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.flf.mapper.SampleMapper">
+<sql id="sampleColumns">batch_id,food_subclass,packing,area,location,link,province,sample_state,sampe_type,production_province,
+		zone,sample_quarter,production_quarter,guarantee_quality_rate,sales_volume,sorbic_acid,nitrite,lead,chromium,cadmium
+</sql>
+	
+	<resultMap type="TbSample" id="sampleResultMap">
+		<id column="id" property="tbSampleId"/>
+		<result column="batch_id" property="batchId"/>
+		<result column="sample_id" property="sampleId"/>
+		<result column="food_subclass" property="foodSubclass"/>
+		<result column="packing" property="packing"/>
+		<result column="area" property="area"/>
+		<result column="location" property="location"/>
+		<result column="link" property="link"/>
+		<result column="province" property="province"/>
+		<result column="sample_state" property="sampleState"/>
+		<result column="sampe_type" property="sampeType"/>
+		<result column="production_quarter" property="guaranteeQualityRate"/>
+		<result column="zone" property="zone"/>
+		<result column="sample_quarter" property="sampleQuarter"/>
+		<result column="guarantee_quality_rate" property="guaranteeQualityRate"/>
+		<result column="sales_volume" property="salesVolume"/>
+		<result column="sorbic_acid" property="sorbicAcid"/>
+		<result column="nitrite" property="nitrite"/>
+		<result column="chromium" property="chromium"/>
+		<result column="cadmium" property="cadmium"/>
+		<result column="risk" property="risk"/>
+	</resultMap>
+	<select id="listSample" parameterType="TbSample" resultMap="sampleResultMap">
+		 ${sql} 
+	</select>
+	
+	<select id="listSampleForExcel" parameterType="TbSample" resultMap="sampleResultMap">
+		 ${sql} 
+	</select>
+	<select id="getSampleByBatchId" parameterType="java.lang.Long" resultMap="sampleResultMap">
+		 SELECT * from tb_sample WHERE batch_id = #{batchId} ORDER BY tips DESC,sample_id ASC
+	</select>
+	
+	<select id="getSampleById" parameterType="java.lang.Long" resultMap="sampleResultMap">
+		 SELECT
+			d.detail sgs,s.*,r.*
+		FROM
+			tb_sample s
+		LEFT JOIN tb_result_detail d ON s.sgst = d.sgst
+		LEFT JOIN tb_sample_result r ON s.id = r.tb_sample_id
+		WHERE s.id = #{tbSampleId} limit 1 
+	</select>
+	
+	<select id="listPageSample" parameterType="TbSample" resultMap="sampleResultMap">
+		 ${sql} 
+	</select>
+	
+	<select id="listPageSampleDetail" parameterType="TbSample" resultMap="sampleResultMap">
+		 select A.*,B.batch_num,B.seq_date from tb_sample A,tb_batch B where A.batch_id=B.id
+		 <if test="batchId!=null and batchId!=''"> AND A.batch_id= #{batchId}</if> 
+		 <if test="isSupplement!=null and isSupplement!='-1'"> AND A.is_supplement= #{isSupplement}</if> 
+		 <if test="batchNum!=null and batchNum!=''"> AND B.batch_num= #{batchNum}</if> 
+		 <if test="unitFrom!=null and unitFrom!='安诺优达'">and A.unit_from like CONCAT('%',#{unitFrom},'%')</if>
+		 <if test="sampleId!=null and sampleId!=''"> and A.sample_id   like CONCAT('%',#{sampleId},'%') </if>
+		 <if test="name!=null and name!=''"> and A.name like CONCAT('%',#{name},'%')</if>
+		  <if test="reportState!=null and reportState!='-1'"> and A.report_state = #{reportState}</if>
+	</select>
+	<select id="listSampleDetail" parameterType="TbSample" resultMap="sampleResultMap">
+		 select * from tb_sample where batch_id= #{batchId}
+		  <if test="batchId!=null and batchId!=''"> AND batch_id= #{batchId}</if>
+		  <if test="downloadStatus!=null and downloadStatus!=''"> AND DOWNLOAD_STATUS= #{downloadStatus}</if>
+		  <if test="auditStatus!=null and auditStatus!=''"> AND audit_status= #{auditStatus}</if>
+		  <if test="sql!=null and sql!=''">${sql}</if>
+		  <if test="sampleId!=null and sampleId!=''"> and sample_id = #{sampleId}</if>
+		  <if test="tbRes13!=null and tbRes13!=''"> and res13 = #{tbRes13}</if>
+	      <if test="tbRes18!=null and tbRes18!=''"> and res18 = #{tbRes18}</if>
+	      <if test="tbRes21!=null and tbRes21!=''"> and res21 = #{tbRes21}</if>
+		  <if test="name!=null and name!=''"> and name like CONCAT('%',#{name},'%')</if>
+		  <if test="unitFrom!=null and unitFrom!='安诺优达'"> and unit_from like CONCAT('%',#{unitFrom},'%')</if>
+	</select>
+	<select id="listPageTipsEdit" parameterType="TbSample" resultMap="sampleResultMap">
+		SELECT s.* from tb_sample s WHERE s.tips_state=1 
+		<!--<if test="isSuper!=null and isSuper!='1'"> and s.is_super = #{isSuper}</if>-->
+		<if test="sampleId!=null and sampleId!=''"> and s.sample_id = #{sampleId}</if>
+	</select>
+	<select id="listPageSampleByBatchId" parameterType="TbSample" resultMap="sampleResultMap">
+		  SELECT * from tb_sample WHERE 1=1
+		  <if test="batchId!=null and batchId!=''"> AND batch_id= #{batchId}</if>
+	</select>
+	<select id="listPageAuditSample" parameterType="TbSample" resultMap="sampleResultMap">
+		SELECT	s.*,CASE s.tips WHEN 0 THEN -1 WHEN 4 THEN 	-2 ELSE  s.tips END a
+		FROM  tb_sample s WHERE s.tips is not null and s.status=2
+		  <if test="batchId!=null and batchId!=''"> AND s.batch_id= #{batchId}</if>
+		  <if test="downloadStatus!=null and downloadStatus!=''"> AND s.DOWNLOAD_STATUS= #{downloadStatus}</if>
+		  <if test="auditStatus!=null and auditStatus!=''"> AND s.audit_status= #{auditStatus}</if>
+		  <if test="sql!=null and sql!=''">${sql}</if>
+		  <if test="sampleId!=null and sampleId!=''"> and s.sample_id = #{sampleId}</if>
+		  <if test="tbRes13!=null and tbRes13!=''"> and s.res13 = #{tbRes13}</if>
+	      <if test="tbRes18!=null and tbRes18!=''"> and s.res18 = #{tbRes18}</if>
+	      <if test="tbRes21!=null and tbRes21!=''"> and s.res21 = #{tbRes21}</if>
+		  <if test="name!=null and name!=''"> and s.name like CONCAT('%',#{name},'%')</if>
+		  <if test="unitFrom!=null and unitFrom!='安诺优达'"> and unit_from like CONCAT('%',#{unitFrom},'%')</if>
+		  <!--<if test="isSuper!=null and isSuper!='1'"> and is_super = #{isSuper}</if>-->
+		ORDER BY a asc,sample_id ASC
+	</select>
+	<select id="listAuditSample" parameterType="TbSample" resultMap="sampleResultMap">
+		SELECT	s.*,CASE s.tips WHEN 0 THEN -1 WHEN 4 THEN 	-2 ELSE  s.tips END a
+		FROM  tb_sample s WHERE s.tips is not null and s.status=2
+		  <if test="batchId!=null and batchId!=''"> AND s.batch_id= #{batchId}</if>
+		  <if test="downloadStatus!=null and downloadStatus!=''"> AND s.DOWNLOAD_STATUS= #{downloadStatus}</if>
+		  <if test="auditStatus!=null and auditStatus!=''"> AND s.audit_status= #{auditStatus}</if>
+		  <if test="sql!=null and sql!=''">${sql}</if>
+		  <if test="sampleId!=null and sampleId!=''"> and s.sample_id = #{sampleId}</if>
+		  <if test="tbRes13!=null and tbRes13!=''"> and s.res13 = #{tbRes13}</if>
+	      <if test="tbRes18!=null and tbRes18!=''"> and s.res18 = #{tbRes18}</if>
+	      <if test="tbRes21!=null and tbRes21!=''"> and s.res21 = #{tbRes21}</if>
+		  <if test="name!=null and name!=''"> and s.name like CONCAT('%',#{name},'%')</if>
+		  <if test="unitFrom!=null and unitFrom!='安诺优达'"> and unit_from like CONCAT('%',#{unitFrom},'%')</if>
+		  <!--<if test="isSuper!=null and isSuper!='1'"> and is_super = #{isSuper}</if>-->
+		ORDER BY a asc,sample_id ASC
+	</select>
+	<select id="listSampleByBatchId" parameterType="TbSample" resultMap="sampleResultMap">
+		   SELECT * from tb_sample WHERE 1=1
+		  <if test="batchId!=null and batchId!=''"> AND batch_id= #{batchId}</if>
+		  <if test="downloadStatus!=null and downloadStatus!=''">AND DOWNLOAD_STATUS= #{downloadStatus}</if>
+		  <if test="auditStatus!=null and auditStatus!=0"> AND audit_status= #{auditStatus}</if>
+		  <if test="sql!=null and sql!=''">${sql}</if>
+		  <if test="unitFrom!=null and unitFrom!='安诺优达'"> and unit_from like CONCAT('%',#{unitFrom},'%')</if>
+		  <if test="sampleId!=null and sampleId!=''"> 
+				and sample_id like CONCAT('%',#{sampleId},'%')
+		  </if>
+			<if test="sRecieveDate!='' and sRecieveDate!=null and eRecieveDate!=null and eRecieveDate!=''">
+			 	and recieve_date between #{sRecieveDate} and #{eRecieveDate}  
+			</if>
+			<if test="sRecieveDate=='' and eRecieveDate!='' and eRecieveDate!=null">
+			 	and recieve_date &lt; #{eRecieveDate} 
+			</if>
+			<if test="sRecieveDate!='' and sRecieveDate!=null and eRecieveDate=='' ">
+			 	and recieve_date &gt; #{sRecieveDate} 
+			</if>
+			<if test="sReportDate!='' and sReportDate!=null and eReportDate!=null and eReportDate!=''">
+			 	and report_date between #{sReportDate} and #{eReportDate}  
+			</if>
+			<if test="sReportDate=='' and eReportDate!='' and eReportDate!=null">
+			 	and report_date &lt; #{eReportDate} 
+			</if>
+			<if test="sReportDate!='' and sReportDate!=null and eReportDate=='' ">
+			 	and report_date &gt; #{sReportDate} 
+			</if>
+		  order by tips DESC
+	</select>
+	<insert id="insertSample" parameterType="TbSample" useGeneratedKeys="true" keyProperty="tbSampleId">
+		insert tb_sample(<include refid="sampleColumns"/>) values (
+		#{batchId},
+		#{foodSubclass},
+		#{packing},
+		#{area},
+		#{location},
+		#{link},
+		#{province},
+		#{sampleState},
+		#{sampeType},
+		#{productionProvince},
+		#{zone},
+		#{sampleQuarter},
+		#{productionQuarter},
+		#{guaranteeQualityRate},
+		#{salesVolume},
+		#{sorbicAcid},
+		#{nitrite},
+		#{lead},
+		#{chromium},
+		#{cadmium}
+		)
+		
+	</insert>
+	<update id="updateStatus" parameterType="TbSample">
+		UPDATE tb_sample SET check_status=#{checkStatus} WHERE id = #{tbSampleId}
+	</update>
+	<update id="updateReportAuditState" parameterType="TbSample">
+		UPDATE tb_sample SET AUDIT_STATUS= '1' 
+		<if test="reportDate!=null and reportDate!=''">
+			, report_date=#{reportDate,jdbcType=VARCHAR}
+		</if>
+		WHERE id = #{tbSampleId}
+	</update>
+	<update id="updateSupplementState" parameterType="TbSample">
+		UPDATE tb_sample SET SUPPLEMENT_STATUS= '1' 
+		<if test="supplementDate!=null and supplementDate!=''">
+			, supplement_date=#{supplementDate,jdbcType=VARCHAR}
+		</if>
+		WHERE id = #{tbSampleId}
+	</update>
+	
+	<update id="updateTips" parameterType="TbSample">
+		UPDATE tb_sample SET tips=#{tips} ,tips_state =#{tipsState}
+		<if test="tips!=null and tips == 0">
+			,report_state = 0
+		</if>
+		<if test="tips!=null and tips != 0">
+			,report_state = 1
+		</if>
+		WHERE id = #{tbSampleId}
+	</update>
+	<update id="updateDownLoadStatus" parameterType="TbSample">
+		UPDATE tb_sample SET DOWNLOAD_STATUS= '1' 
+		<if test="reportTemplate!=null and reportTemplate!=''">
+			,report_template = #{reportTemplate}
+		</if>
+		WHERE id = #{tbSampleId}
+	</update>
+	<update id="updateSuDownLoadStatus" parameterType="TbSample">
+		UPDATE tb_sample SET su_download_status= '1' WHERE id = #{tbSampleId}
+	</update>
+	<update id="updateclinical" parameterType="TbSample">
+		UPDATE tb_sample 
+		SET name = #{name,jdbcType=VARCHAR},
+			age = #{age,jdbcType=INTEGER},
+			outpatient_num = #{outpatientNum,jdbcType=VARCHAR},
+			ges_week = #{gesWeek,jdbcType=VARCHAR},
+			sample_type = #{sampleType,jdbcType=VARCHAR},
+			last_period = #{lastPeriod,jdbcType=VARCHAR},
+			preg_history = #{pregHistory,jdbcType=VARCHAR},
+			IVF_EF_preg = #{ivfGestation,jdbcType=VARCHAR},
+			fetus_num = #{fetusNum,jdbcType=VARCHAR},
+			sampling_date = #{samplingDate,jdbcType=VARCHAR},
+			diagnosis = #{diagnosis,jdbcType=VARCHAR},
+			doctor_from = #{doctorFrom,jdbcType=VARCHAR},
+			z21New = #{z21New,jdbcType=FLOAT},
+			z18New = #{z18New,jdbcType=FLOAT},
+			z13New = #{z13New,jdbcType=FLOAT},
+			tbRes21New = #{tbRes21New,jdbcType=VARCHAR},
+			tbRes18New = #{tbRes18New,jdbcType=VARCHAR},
+			tbRes13New = #{tbRes13New,jdbcType=VARCHAR},
+			recieve_date = #{recieveDate,jdbcType=VARCHAR}
+		WHERE id = #{tbSampleId}
+	</update>
+	
+	<delete id="deleteSample" parameterType="java.lang.Long">
+	     delete from tb_sample where batch_id=#{batchId} 
+	</delete>
+	
+	<select id="getSampleBysampleId" parameterType="java.lang.String" resultMap="sampleResultMap">
+		 SELECT * from tb_sample WHERE id = #{sampleId}
+	</select>
+	<update id="saveMenu" parameterType="TbSample">
+		UPDATE tb_sample SET menu_name = #{menuName} WHERE id = #{tbSampleId}
+	</update>
+	<select id="getSampleIds" resultMap="sampleResultMap">
+		SELECT * from tb_sample s
+		where s.id in 
+		<foreach item="ids" index="index" collection="list" open="("
+			separator="," close=")">
+			#{ids}
+		</foreach>
+	</select>
+	
+	<select id="listPageSampleTrack" resultMap="sampleResultMap" parameterType="TbSample">
+		SELECT 	s.id,s.sample_id,s.lib_id,s.hospital_code,s.`name`,s.tips,b.batch_num,b.seq_date  FROM	tb_sample s
+		LEFT JOIN tb_batch b ON s.batch_id=b.id
+		<where>
+			SUBSTRING_INDEX(SUBSTRING_INDEX(s.lib_id, "-", 2),"-" ,- 1) = 1
+
+			<if test="sampleId!=null and sampleId!='' ">
+				AND s.sample_id LIKE CONCAT('%',#{sampleId},'%')
+			</if>
+			<if test="name!=null and name!='' ">
+				AND s.name LIKE CONCAT('%',#{name},'%')
+			</if>
+			<if test="reportState==0 or reportState==1">
+				AND s.report_state = #{reportState}
+			</if>
+			<if test="reportState==null or reportState==-1">
+				AND s.report_state IN (0,1)
+			</if>
+		</where>
+
+		ORDER BY s.id DESC
+	</select>
+
+	<select id="getSampleByLibId" parameterType="String" resultMap="sampleResultMap">
+		SELECT 	s.id,SUBSTRING_INDEX(s.lib_id, "-", 1) a,s.sample_id,s.lib_id,s.hospital_code,s.`name`,s.tips,b.batch_num,b.seq_date  FROM	tb_sample s
+		LEFT JOIN tb_batch b ON s.batch_id=b.id 
+		WHERE	SUBSTRING_INDEX(s.lib_id, "-", 1)= #{libId}
+		AND (SUBSTRING_INDEX(SUBSTRING_INDEX(s.lib_id, "-", 2),"-",-1) = 2 OR SUBSTRING_INDEX(SUBSTRING_INDEX(s.lib_id, "-", 2),"-",-1) = 3)
+		ORDER BY s.id
+	</select>
+</mapper>

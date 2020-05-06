@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD SQL Map Config 3.0//EN"  
+	"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<typeAliases>
+		<typeAlias type="com.flf.entity.User" alias="User"/>
+		<typeAlias type="com.flf.entity.Page" alias="Page"/>
+		<typeAlias type="com.flf.entity.Role" alias="Role"/>
+		<typeAlias type="com.flf.entity.Menu" alias="Menu"/>
+		<typeAlias type="com.flf.entity.TbBatch" alias="TbBatch"/>
+		<typeAlias type="com.flf.entity.TbSample" alias="TbSample"/>
+		<typeAlias type="com.flf.entity.Warn" alias="Warn"/>
+	</typeAliases>
+	<plugins>
+		<plugin interceptor="com.flf.plugin.PagePlugin">
+			<property name="dialect" value="mysql"/>
+			<property name="pageSqlId" value=".*listPage.*"/>
+		</plugin>
+	</plugins>
+	
+	<mappers>
+		<mapper resource="mybatis/User.xml"/>
+		<mapper resource="mybatis/Role.xml"/>
+		<mapper resource="mybatis/Menu.xml"/>
+		<mapper resource="mybatis/Batch.xml"/>
+		<mapper resource="mybatis/Sample.xml"/>
+		<mapper resource="mybatis/Warn.xml"/>
+	</mappers>
+	
+</configuration>

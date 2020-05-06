@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-module
+  type="WEB"
+  name="PD_IVD"
+  id="myeclipse.1496645137220"
+  context-root="/PD_IVD"
+  j2ee-spec="5.0"
+  archive="PD_IVD.war">
+  <attributes>
+    <attribute name="webrootdir" value="/WebRoot" />
+  </attributes>
+</project-module>
+

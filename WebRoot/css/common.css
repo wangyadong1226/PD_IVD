@@ -1,0 +1,6 @@
+.tablelist{width:100%;}
+.tablelist th{border-collapse: collapse;border:1px none #000;white-space: nowrap; /* 自适应宽度*/
+    word-break:  keep-all}
+.tablelist td{ white-space:nowrap}/*浣挎牱鏈琲d鍒椾笉鎹㈣灞曠ず*/
+.tablelist .col2{width: 12%;}/*鍔犲鏍锋湰id鍒�*/
+.tablelist .collast{}/*鏈�鍚庝竴鍒椾笉璁剧疆瀹藉害*/

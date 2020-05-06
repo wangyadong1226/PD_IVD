@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.flf.mapper.BatchMapper">
+	<sql id="batchColumns">batch_num,upload_time,upload_man</sql>
+
+	<resultMap type="TbBatch" id="batchResultMap">
+		<id column="id" property="batchId"/>
+		<result column="batch_num" property="batchNum"/>
+		<result column="upload_time" property="uploadTime"/>
+		<result column="upload_man" property="uploadMan"/>
+	</resultMap>
+
+	<select id="listPageBatch" parameterType="TbBatch" resultMap="batchResultMap">
+		 select * from tb_batch
+	</select>
+	<delete id="deleteBatch" parameterType="java.lang.Long">
+		delete from tb_batch where id = #{batchId}
+	</delete>
+
+	<select id="getBatchById" parameterType="java.lang.Long" resultMap="batchResultMap">
+		 select * from tb_batch where id = #{batchId} 
+	</select>
+	<insert id="insertBatch" parameterType="TbBatch" useGeneratedKeys="true" keyProperty="batchId">
+		insert tb_batch (<include refid="batchColumns"/>) values (
+		#{batchNum},
+		#{uploadTime},
+		#{uploadMan}
+		)
+	</insert>
+
+	
+</mapper>
